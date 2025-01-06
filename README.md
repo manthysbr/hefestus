@@ -1,2 +1,3 @@
-# ia-into-ci
-Repo to make a model infer information into a CI env
+# Hefestus API
+
+Integrating IA into your CI env.
