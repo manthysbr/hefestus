@@ -121,9 +121,9 @@ docker run -d \
 2. Create a feature branch
 3. Commit your changes
 4. Push to the branch
-5. Submit a Pull Request
+5. Submit a Pull Request ( or just copy it and paste lol )
 
 ## 📝 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the LICENSE file for details but is open for everyone to use it.
 ```
