@@ -1,0 +1,74 @@
+basePath: /api
+definitions:
+  hefestus-api_internal_models.ErrorRequest:
+    properties:
+      context:
+        example: Trying to run go build in new project
+        type: string
+      error_details:
+        example: 'go: cannot find module providing package'
+        type: string
+    type: object
+  hefestus-api_internal_models.ErrorResponse:
+    properties:
+      error:
+        $ref: '#/definitions/hefestus-api_internal_models.ErrorSolution'
+      message:
+        type: string
+    type: object
+  hefestus-api_internal_models.ErrorSolution:
+    properties:
+      causa:
+        example: Módulo Go não inicializado
+        type: string
+      solucao:
+        example: Execute go mod init nome-do-projeto
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Error resolution API using local LLM
+  title: Hefestus API
+  version: "1.0"
+paths:
+  /errors:
+    post:
+      consumes:
+      - application/json
+      description: Get possible solutions for an error
+      parameters:
+      - description: Error details and context
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/hefestus-api_internal_models.ErrorRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/hefestus-api_internal_models.ErrorResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get error resolution
+      tags:
+      - errors
+schemes:
+- http
+swagger: "2.0"
+tags:
+- description: Error resolution endpoints
+  name: errors

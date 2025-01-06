@@ -1,0 +1,113 @@
+{
+    "schemes": [
+        "http"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "Error resolution API using local LLM",
+        "title": "Hefestus API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/api",
+    "paths": {
+        "/errors": {
+            "post": {
+                "description": "Get possible solutions for an error",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "errors"
+                ],
+                "summary": "Get error resolution",
+                "parameters": [
+                    {
+                        "description": "Error details and context",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/hefestus-api_internal_models.ErrorRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/hefestus-api_internal_models.ErrorResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "hefestus-api_internal_models.ErrorRequest": {
+            "type": "object",
+            "properties": {
+                "context": {
+                    "type": "string",
+                    "example": "Trying to run go build in new project"
+                },
+                "error_details": {
+                    "type": "string",
+                    "example": "go: cannot find module providing package"
+                }
+            }
+        },
+        "hefestus-api_internal_models.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "$ref": "#/definitions/hefestus-api_internal_models.ErrorSolution"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "hefestus-api_internal_models.ErrorSolution": {
+            "type": "object",
+            "properties": {
+                "causa": {
+                    "type": "string",
+                    "example": "Módulo Go não inicializado"
+                },
+                "solucao": {
+                    "type": "string",
+                    "example": "Execute go mod init nome-do-projeto"
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "description": "Error resolution endpoints",
+            "name": "errors"
+        }
+    ]
+}
