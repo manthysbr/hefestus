@@ -98,6 +98,23 @@ Here are some prints how the swagger should look like:
 > [!IMPORTANT]
 > ![swagger2](https://github.com/manthysbr/hefestus/blob/main/img/image2.png)
 
+## Using it with Docker 🐳
+
+Run the command below:
+
+```
+docker build -t hefestus:latest .
+```
+
+Then run it locally:
+```
+docker run -d \
+    -p 8080:8080 \
+    -e OLLAMA_MODEL=qwen2.5:1.5b \
+    --name hefestus \
+    hefestus:latest
+```
+
 ## 🤝 Contributing
 
 1. Fork the repository
