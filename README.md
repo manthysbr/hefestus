@@ -1,49 +1,102 @@
-# Hefestus API
+# Hefestus API 
 
-This project is an API built in Go that interacts with a language model running locally on WSL using Ollama. The API is designed to receive error messages from a CI environment and provide possible resolutions using Retrieval-Augmented Generation (RAG) techniques.
+[![Go Version](https://img.shields.io/github/go-mod/go-version/yourusername/hefestus)](https://go.dev/)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-## Project Structure
+Hefestus is a Go-powered API that leverages local Language Models (via Ollama) to analyze and resolve development errors. It provides smart, context-aware solutions for common development issues.
 
-```
-error-resolver-api
-├── cmd
-│   └── server
-│       └── main.go          # Entry point of the application
-├── internal
-│   ├── handlers
-│   │   ├── errors_handler.go # Logic for handling error requests
-│   │   └── health_handler.go  # Health check logic
-│   ├── models
-│   │   ├── error_request.go   # Structure for incoming error requests
-│   │   └── error_response.go   # Structure for outgoing error responses
-│   └── services
-│       ├── llm_service.go     # Logic for interacting with the language model
-│       └── error_service.go    # Business logic for processing errors
-├── api
-│   ├── swagger.yaml           # Swagger documentation for the API
-│   └── client.go              # Client code for interacting with the API
-├── pkg
-│   └── ollama
-│       └── client.go          # Client code for interacting with the Ollama model
-├── go.mod                     # Go module configuration
-├── go.sum                     # Checksums for module dependencies
-├── Dockerfile                 # Instructions for building a Docker image
-├── .env.example               # Example of environment variables
-└── README.md                  # Documentation for the project
+## 🌟 Features
+
+- **Smart Error Analysis**: Get concise root cause analysis and detailed solutions
+- **Local LLM Integration**: Uses Ollama for fast, private error resolution
+- **Swagger Documentation**: Interactive API documentation
+- **JSON Responses**: Clean, structured response format
+
+## 🛠️ Prerequisites
+
+- Go 1.21+
+- [Ollama](https://ollama.ai/) with a compatible model (e.g., qwen, mistral)
+- Docker (optional)
+
+## 🚀 Quick Start
+
+1. **Clone the repository**
+```bash
+git clone https://github.com/yourusername/hefestus.git
+cd hefestus
 ```
 
-## Setup Instructions
+2. **Set up environment**
+```bash
+cp .env.example .env
+# Edit .env with your settings
+```
 
-1. **Install Dependencies**: Ensure you have Go, Docker, and WSL installed on your machine.
-2. **Clone the Repository**: Clone this repository to your local machine.
-3. **Configure Ollama**: Set up Ollama locally in your WSL environment with the necessary models.
-4. **Run the Application**: Navigate to the `cmd/server` directory and run `go run main.go` to start the API server.
+3. **Run Ollama**
+```bash
+ollama run qwen2.5:1.5b  # or your preferred model
+```
 
-## Usage
+4. **Start the API**
+```bash
+go run cmd/server/main.go
+```
 
-- Use the `/errors` endpoint to send error requests and receive possible resolutions.
-- Access the Swagger documentation at `/swagger` to explore the API endpoints and their usage.
+## 📚 API Usage
 
-## Contributing
+### Error Resolution Endpoint
 
-Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
+```bash
+curl -X POST http://localhost:8080/api/errors \
+  -H "Content-Type: application/json" \
+  -d '{
+    "error_details": "go: cannot find module providing package",
+    "context": "Trying to run go build in new project"
+  }'
+```
+
+Response:
+```json
+{
+  "error": {
+    "causa": "Módulo Go não inicializado no projeto",
+    "solucao": "Execute go mod init para criar o módulo e suas dependências..."
+  },
+  "message": "Resolution retrieved successfully"
+}
+```
+
+## 🔍 API Documentation
+
+Access Swagger UI at: 
+
+http://localhost:8080/swagger/index.html
+
+
+
+## 📁 Project Structure
+
+```
+hefestus/
+├── cmd/
+│   └── server/          # Application entry point
+├── internal/
+│   ├── models/          # Data structures
+│   └── services/        # Business logic
+├── pkg/
+│   └── ollama/          # LLM client
+└── api/                 # API client library
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Submit a Pull Request
+
+## 📝 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+```

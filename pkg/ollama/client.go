@@ -63,10 +63,10 @@ REGRAS IMPORTANTES:
 		Prompt: prompt,
 		Stream: false,
 		Options: map[string]interface{}{
-			"temperature": 0.3, // Reduced for more consistent output
-			"top_k":       10,  // Reduced for more focused responses
-			"top_p":       0.9,
-			"max_tokens":  500,
+			"temperature": 0.4, // Reduced for more consistent output
+			"top_k":       1.0, // Reduced for more focused responses
+			"top_p":       1.1,
+			"max_tokens":  256,
 		},
 	}
 
