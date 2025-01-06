@@ -92,10 +92,11 @@ hefestus/
 
 Here are some prints how the swagger should look like:
 > [!IMPORTANT]
-> [swagger1](https://github.com/manthysbr/hefestus/blob/main/img/image1.png)
+> ![swagger1](https://github.com/manthysbr/hefestus/blob/main/img/image1.png)
+
 
 > [!IMPORTANT]
-> [swagger2](https://github.com/manthysbr/hefestus/blob/main/img/image2.png)
+> ![swagger2](https://github.com/manthysbr/hefestus/blob/main/img/image2.png)
 
 ## 🤝 Contributing
 
