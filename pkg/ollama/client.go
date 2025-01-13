@@ -67,15 +67,17 @@ func (c *Client) Query(ctx context.Context, errorDetails string, domain string, 
 
 	// Format instructions
 	const formatInstructions = `
-REGRAS IMPORTANTES:
-1. Responda EXATAMENTE neste formato
-2. Use CAUSA: e SOLUCAO: como separadores exatos
-3. Não use formatação ou caracteres especiais
-4. Separe CAUSA e SOLUCAO com uma única quebra de linha
+IMPORTANTE: Responda EXATAMENTE neste formato sem NENHUM texto adicional:
 
-FORMATO OBRIGATÓRIO:
 CAUSA: [máximo 4 palavras]
-SOLUCAO: [apenas comandos, um por linha]`
+SOLUCAO: [apenas comandos, um por linha]
+
+REGRAS ESTRITAS:
+1. Use EXATAMENTE os marcadores CAUSA: e SOLUCAO:
+2. Não adicione numeração ou formatação
+3. Não faça explicações ou comentários
+4. Não repita o erro ou contexto
+5. Mantenha a resposta técnica e direta`
 
 	// Combine template with instructions
 	promptTemplate := fmt.Sprintf("%s\n%s\n\nERRO: {{.Error}}\nCONTEXTO: {{.Context}}",
@@ -137,15 +139,16 @@ SOLUCAO: [apenas comandos, um por linha]`
 
 	log.Printf("Raw LLM response: %s", apiResponse.Response)
 
-	// Parse response sections
+	// Enhanced response parsing
 	response := strings.TrimSpace(apiResponse.Response)
-	parts := strings.Split(response, "\n")
 
-	var causa string
+	// Split por linhas e processa
+	lines := strings.Split(response, "\n")
+	var causa, solucao string
+	inSolucao := false
 	var solucaoLines []string
-	var currentSection string
 
-	for _, line := range parts {
+	for _, line := range lines {
 		line = strings.TrimSpace(line)
 		if line == "" {
 			continue
@@ -153,27 +156,28 @@ SOLUCAO: [apenas comandos, um por linha]`
 
 		if strings.HasPrefix(line, "CAUSA:") {
 			causa = strings.TrimSpace(strings.TrimPrefix(line, "CAUSA:"))
-			currentSection = "causa"
-		} else if strings.HasPrefix(line, "SOLUCAO:") || strings.HasPrefix(line, "SOLUÇÃO:") {
-			currentSection = "solucao"
-		} else if currentSection == "solucao" {
-			// Remove numbered lists and cleanup
-			line = strings.TrimSpace(strings.TrimLeft(line, "0123456789. "))
+		} else if strings.HasPrefix(line, "SOLUCAO:") {
+			inSolucao = true
+		} else if inSolucao {
+			// Remove qualquer numeração ou formatação
+			line = strings.TrimLeft(line, "0123456789.- *")
+			line = strings.TrimSpace(line)
 			if line != "" {
 				solucaoLines = append(solucaoLines, line)
 			}
 		}
 	}
 
+	// Validação mais estrita
 	if causa == "" || len(solucaoLines) == 0 {
-		log.Printf("Invalid format detected. Response: %s", response)
+		log.Printf("Invalid format detected in response:\n%s", response)
 		return "", "", fmt.Errorf("invalid response format from LLM")
 	}
 
-	// Clean up special characters
-	causa = strings.Trim(causa, `"* `)
-	solucao := strings.Join(solucaoLines, "\n")
-	solucao = strings.Trim(solucao, `"* `)
+	// Limpa caracteres especiais
+	causa = strings.Trim(causa, `"*_ `)
+	solucao = strings.Join(solucaoLines, "\n")
+	solucao = strings.Trim(solucao, `"*_ `)
 
 	return causa, solucao, nil
 }

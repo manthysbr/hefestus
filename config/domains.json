@@ -2,33 +2,30 @@
   "domains": {
     "kubernetes": {
       "name": "Kubernetes",
-      "prompt_template": "Você é um especialista em Kubernetes e Cloud Native. Analise o seguinte erro com precisão e objetividade:\n\nERRO: {{.Error}}\nCONTEXTO: {{.Context}}\n\nFormate sua resposta exatamente assim:\n\nCAUSA: [TITULO em até 4 palavras]\nSOLUÇÃO: [informe apenas comandos ou passos diretos, sem explicações adicionais]\n\nEvite repetir o erro ou o contexto.",
-      "parameters": {
-        "temperature": 0.2,
-        "top_p": 0.8,
-        "max_tokens": 100
-      },
-      "dictionary_path": "data/patterns/kubernetes_errors.json"
-    },
-    "github": {
-      "name": "GitHub Actions",
-      "prompt_template": "Como um especialista em CI/CD e GitHub Actions, analise o seguinte erro com precisão:\n\nERRO: {{.Error}}\nCONTEXTO: {{.Context}}\n\nFormato da resposta:\n\nCAUSA: [TITULO em até 4 palavras]\nSOLUÇÃO: [forneça comandos ou ações diretas, sem explicações adicionais]\n\nNão repita o erro nem o contexto.",
+      "prompt_template": "Você é um especialista em Kubernetes. Analise este erro de forma objetiva e técnica.\n\nPROVIDA APENAS:\nCAUSA: [4 palavras exatas]\nSOLUCAO: [somente comandos kubectl/yamls]",
       "parameters": {
         "temperature": 0.1,
-        "top_p": 0.8,
-        "max_tokens": 100
-      },
-      "dictionary_path": "data/patterns/github_errors.json"
+        "top_p": 0.1,
+        "max_tokens": 150
+      }
+    },
+    "github": {
+      "name": "GitHub Actions", 
+      "prompt_template": "Você é um especialista em GitHub Actions. Analise este erro de forma objetiva e técnica.\n\nPROVIDA APENAS:\nCAUSA: [4 palavras exatas]\nSOLUCAO: [somente comandos git/actions]",
+      "parameters": {
+        "temperature": 0.1,
+        "top_p": 0.1,
+        "max_tokens": 150
+      }
     },
     "argocd": {
       "name": "ArgoCD",
-      "prompt_template": "Você é um especialista em GitOps e ArgoCD. Analise o erro abaixo de forma direta:\n\nERRO: {{.Error}}\nCONTEXTO: {{.Context}}\n\nForneça sua resposta neste formato:\n\nCAUSA: [TITULO em até 4 palavras]\nSOLUÇÃO: [liste comandos diretos ou ações necessárias]\n\nNão inclua o erro ou contexto na resposta.",
+      "prompt_template": "Você é um especialista em ArgoCD. Analise este erro de forma objetiva e técnica.\n\nPROVIDA APENAS:\nCAUSA: [4 palavras exatas]\nSOLUCAO: [somente comandos argocd/kubectl]",
       "parameters": {
         "temperature": 0.1,
-        "top_p": 0.8,
-        "max_tokens": 100
-      },
-      "dictionary_path": "data/patterns/argocd_errors.json"
+        "top_p": 0.1,
+        "max_tokens": 150
+      }
     }
   }
 }
