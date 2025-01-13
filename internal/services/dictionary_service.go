@@ -2,27 +2,33 @@ package services
 
 import (
 	"encoding/json"
+	"fmt"
 	"hefestus-api/internal/models"
 	"log"
 	"os"
-	"path/filepath"
 	"regexp"
 	"sync"
 )
 
 type DictionaryService struct {
 	dictionaries map[string]*models.ErrorDictionary
+	domains      map[string]models.DomainConfig
 	mu           sync.RWMutex
 }
 
 func NewDictionaryService() (*DictionaryService, error) {
-	domains := []string{"kubernetes", "github", "argocd"}
+	// Load domains configuration
+	domainsConfig, err := loadDomainsConfig()
+	if err != nil {
+		return nil, fmt.Errorf("failed to load domains config: %w", err)
+	}
+
 	dictionaries := make(map[string]*models.ErrorDictionary)
 
-	for _, domain := range domains {
-		dict, err := loadDomainDictionary(domain)
+	// Load dictionaries based on domain configurations
+	for domain, config := range domainsConfig.Domains {
+		dict, err := loadDomainDictionary(config.DictionaryPath)
 		if err != nil {
-			// Log warning but continue loading other dictionaries
 			log.Printf("Warning: couldn't load dictionary for domain %s: %v", domain, err)
 			continue
 		}
@@ -31,10 +37,47 @@ func NewDictionaryService() (*DictionaryService, error) {
 
 	return &DictionaryService{
 		dictionaries: dictionaries,
+		domains:      domainsConfig.Domains,
 	}, nil
 }
 
-func (s *DictionaryService) FindMatches(domain, errorText string) []models.ErrorPattern {
+func loadDomainsConfig() (*models.DomainsConfig, error) {
+	data, err := os.ReadFile("config/domains.json")
+	if err != nil {
+		return nil, fmt.Errorf("failed to read domains config: %w", err)
+	}
+
+	var config models.DomainsConfig
+	if err := json.Unmarshal(data, &config); err != nil {
+		return nil, fmt.Errorf("failed to parse domains config: %w", err)
+	}
+
+	return &config, nil
+}
+
+func (s *DictionaryService) GetDomainConfig(domain string) (models.DomainConfig, bool) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+
+	config, exists := s.domains[domain]
+	return config, exists
+}
+
+func loadDomainDictionary(path string) (*models.ErrorDictionary, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+
+	var dict models.ErrorDictionary
+	if err := json.Unmarshal(data, &dict); err != nil {
+		return nil, err
+	}
+
+	return &dict, nil
+}
+
+func (s *DictionaryService) FindMatches(domain string, errorText string) []models.ErrorPattern {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 
@@ -50,19 +93,4 @@ func (s *DictionaryService) FindMatches(domain, errorText string) []models.Error
 		}
 	}
 	return matches
-}
-
-func loadDomainDictionary(domain string) (*models.ErrorDictionary, error) {
-	path := filepath.Join("data", "patterns", domain+"_errors.json")
-	data, err := os.ReadFile(path)
-	if err != nil {
-		return nil, err
-	}
-
-	var dict models.ErrorDictionary
-	if err := json.Unmarshal(data, &dict); err != nil {
-		return nil, err
-	}
-
-	return &dict, nil
 }

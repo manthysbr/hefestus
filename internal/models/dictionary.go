@@ -10,3 +10,7 @@ type ErrorPattern struct {
 type ErrorDictionary struct {
 	Patterns map[string]ErrorPattern `json:"patterns"`
 }
+
+type DomainsConfig struct {
+	Domains map[string]DomainConfig `json:"domains"`
+}

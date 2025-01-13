@@ -1,34 +1,34 @@
 {
-    "domains": {
-      "github": {
-        "name": "GitHub Actions",
-        "prompt_template": "Como especialista em CI/CD e GitHub Actions, analise este erro:\n\nERRO: {{.Error}}\nCONTEXTO: {{.Context}}\n\nResponda exatamente neste formato:\n\nCAUSA: [causa em 10 palavras]\nSOLUCAO: [solução detalhada]",
-        "parameters": {
-          "temperature": 0.3,
-          "top_p": 0.9,
-          "max_tokens": 300
-        },
-        "dictionary_path": "data/patterns/github_errors.json"
+  "domains": {
+    "kubernetes": {
+      "name": "Kubernetes",
+      "prompt_template": "Você é um especialista em Kubernetes e Cloud Native. Analise o seguinte erro com precisão e objetividade:\n\nERRO: {{.Error}}\nCONTEXTO: {{.Context}}\n\nFormate sua resposta exatamente assim:\n\nCAUSA: [TITULO em até 4 palavras]\nSOLUÇÃO: [informe apenas comandos ou passos diretos, sem explicações adicionais]\n\nEvite repetir o erro ou o contexto.",
+      "parameters": {
+        "temperature": 0.2,
+        "top_p": 0.8,
+        "max_tokens": 100
       },
-      "kubernetes": {
-        "name": "Kubernetes",
-        "prompt_template": "Como especialista em Kubernetes e Cloud Native, analise este erro:\n\nERRO: {{.Error}}\nCONTEXTO: {{.Context}}\n\nResponda exatamente neste formato:\n\nCAUSA: [causa em 10 palavras]\nSOLUCAO: [solução detalhada]",
-        "parameters": {
-          "temperature": 0.4,
-          "top_p": 0.95,
-          "max_tokens": 400
-        },
-        "dictionary_path": "data/patterns/kubernetes_errors.json"
+      "dictionary_path": "data/patterns/kubernetes_errors.json"
+    },
+    "github": {
+      "name": "GitHub Actions",
+      "prompt_template": "Como um especialista em CI/CD e GitHub Actions, analise o seguinte erro com precisão:\n\nERRO: {{.Error}}\nCONTEXTO: {{.Context}}\n\nFormato da resposta:\n\nCAUSA: [TITULO em até 4 palavras]\nSOLUÇÃO: [forneça comandos ou ações diretas, sem explicações adicionais]\n\nNão repita o erro nem o contexto.",
+      "parameters": {
+        "temperature": 0.1,
+        "top_p": 0.8,
+        "max_tokens": 100
       },
-      "argocd": {
-        "name": "ArgoCD",
-        "prompt_template": "Como especialista em GitOps e ArgoCD, analise este erro:\n\nERRO: {{.Error}}\nCONTEXTO: {{.Context}}\n\nResponda exatamente neste formato:\n\nCAUSA: [causa em 10 palavras]\nSOLUCAO: [solução detalhada]",
-        "parameters": {
-          "temperature": 0.3,
-          "top_p": 0.9,
-          "max_tokens": 350
-        },
-        "dictionary_path": "data/patterns/argocd_errors.json"
-      }
+      "dictionary_path": "data/patterns/github_errors.json"
+    },
+    "argocd": {
+      "name": "ArgoCD",
+      "prompt_template": "Você é um especialista em GitOps e ArgoCD. Analise o erro abaixo de forma direta:\n\nERRO: {{.Error}}\nCONTEXTO: {{.Context}}\n\nForneça sua resposta neste formato:\n\nCAUSA: [TITULO em até 4 palavras]\nSOLUÇÃO: [liste comandos diretos ou ações necessárias]\n\nNão inclua o erro ou contexto na resposta.",
+      "parameters": {
+        "temperature": 0.1,
+        "top_p": 0.8,
+        "max_tokens": 100
+      },
+      "dictionary_path": "data/patterns/argocd_errors.json"
     }
   }
+}
