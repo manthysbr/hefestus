@@ -65,9 +65,8 @@ func (c *Client) Query(ctx context.Context, errorDetails string, domain string, 
 		return "", "", fmt.Errorf("unknown domain: %s", domain)
 	}
 
-	// Add strict format instructions to prompt template
-	domainConfig.PromptTemplate = fmt.Sprintf(`%s
-
+	// Format instructions
+	const formatInstructions = `
 REGRAS IMPORTANTES:
 1. Responda EXATAMENTE neste formato
 2. Use CAUSA: e SOLUCAO: como separadores exatos
@@ -76,18 +75,19 @@ REGRAS IMPORTANTES:
 
 FORMATO OBRIGATÓRIO:
 CAUSA: [máximo 4 palavras]
-SOLUCAO: [apenas comandos, um por linha]
+SOLUCAO: [apenas comandos, um por linha]`
 
-ERRO: {{.Error}}
-CONTEXTO: {{.Context}}`, domainConfig.PromptTemplate)
+	// Combine template with instructions
+	promptTemplate := fmt.Sprintf("%s\n%s\n\nERRO: {{.Error}}\nCONTEXTO: {{.Context}}",
+		domainConfig.PromptTemplate,
+		formatInstructions)
 
 	// Parse template
-	tmpl, err := template.New("prompt").Parse(domainConfig.PromptTemplate)
+	tmpl, err := template.New("prompt").Parse(promptTemplate)
 	if err != nil {
 		return "", "", fmt.Errorf("failed to parse prompt template: %w", err)
 	}
 
-	// Execute template
 	var promptBuf bytes.Buffer
 	err = tmpl.Execute(&promptBuf, map[string]string{
 		"Error":   errorDetails,
@@ -99,16 +99,12 @@ CONTEXTO: {{.Context}}`, domainConfig.PromptTemplate)
 
 	log.Printf("Sending prompt to LLM: %s", promptBuf.String())
 
-	// Prepare request with stricter parameters
+	// Prepare request
 	reqBody := Request{
-		Model:  c.model,
-		Prompt: promptBuf.String(),
-		Stream: false,
-		Options: map[string]interface{}{
-			"temperature": 0.1,
-			"top_p":       0.1,
-			"max_tokens":  150,
-		},
+		Model:   c.model,
+		Prompt:  promptBuf.String(),
+		Stream:  false,
+		Options: domainConfig.Parameters,
 	}
 
 	jsonData, err := json.Marshal(reqBody)
@@ -141,32 +137,42 @@ CONTEXTO: {{.Context}}`, domainConfig.PromptTemplate)
 
 	log.Printf("Raw LLM response: %s", apiResponse.Response)
 
-	// Updated response parsing
+	// Parse response sections
 	response := strings.TrimSpace(apiResponse.Response)
 	parts := strings.Split(response, "\n")
 
-	var causa, solucao string
-	var foundCausa, foundSolucao bool
+	var causa string
+	var solucaoLines []string
+	var currentSection string
 
-	for _, part := range parts {
-		part = strings.TrimSpace(part)
-		if strings.HasPrefix(part, "CAUSA:") {
-			causa = strings.TrimSpace(strings.TrimPrefix(part, "CAUSA:"))
-			foundCausa = true
-		} else if strings.HasPrefix(part, "SOLUCAO:") {
-			solucao = strings.Join(parts[strings.Index(parts, part)+1:], "\n")
-			foundSolucao = true
-			break
+	for _, line := range parts {
+		line = strings.TrimSpace(line)
+		if line == "" {
+			continue
+		}
+
+		if strings.HasPrefix(line, "CAUSA:") {
+			causa = strings.TrimSpace(strings.TrimPrefix(line, "CAUSA:"))
+			currentSection = "causa"
+		} else if strings.HasPrefix(line, "SOLUCAO:") || strings.HasPrefix(line, "SOLUÇÃO:") {
+			currentSection = "solucao"
+		} else if currentSection == "solucao" {
+			// Remove numbered lists and cleanup
+			line = strings.TrimSpace(strings.TrimLeft(line, "0123456789. "))
+			if line != "" {
+				solucaoLines = append(solucaoLines, line)
+			}
 		}
 	}
 
-	if !foundCausa || !foundSolucao {
+	if causa == "" || len(solucaoLines) == 0 {
 		log.Printf("Invalid format detected. Response: %s", response)
 		return "", "", fmt.Errorf("invalid response format from LLM")
 	}
 
-	// Clean up any remaining special characters
+	// Clean up special characters
 	causa = strings.Trim(causa, `"* `)
+	solucao := strings.Join(solucaoLines, "\n")
 	solucao = strings.Trim(solucao, `"* `)
 
 	return causa, solucao, nil
