@@ -3,12 +3,14 @@
 [![Go Version](https://img.shields.io/github/go-mod/go-version/yourusername/hefestus)](https://go.dev/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-Hefestus is a Go-powered API that leverages local Language Models (via Ollama) to analyze and resolve development errors. It provides smart, context-aware solutions for common development issues.
+Hefestus is a Go-powered API that leverages local Language Models (via Ollama) to analyze and resolve development errors across different domains (Kubernetes, GitHub Actions, ArgoCD). It provides smart, context-aware solutions for common development issues.
 
 ## 🌟 Features
 
+- **Domain-Specific Error Analysis**: Specialized handling for Kubernetes, GitHub Actions, and ArgoCD errors
 - **Smart Error Analysis**: Get concise root cause analysis and detailed solutions
 - **Local LLM Integration**: Uses Ollama for fast, private error resolution
+- **Pattern Matching**: Uses pre-defined error patterns for better solutions
 - **Swagger Documentation**: Interactive API documentation
 - **JSON Responses**: Clean, structured response format
 
@@ -44,35 +46,48 @@ go run cmd/server/main.go
 
 ## 📚 API Usage
 
-### Error Resolution Endpoint
+### Error Resolution Endpoints
 
+#### Kubernetes Error
 ```bash
-curl -X POST http://localhost:8080/api/errors \
+curl -X POST http://localhost:8080/api/errors/kubernetes \
   -H "Content-Type: application/json" \
   -d '{
-    "error_details": "go: cannot find module providing package",
-    "context": "Trying to run go build in new project"
+    "error_details": "0/3 nodes are available: insufficient memory",
+    "context": "Deploying new pod in production cluster"
   }'
 ```
 
-Response:
+#### GitHub Actions Error
+```bash
+curl -X POST http://localhost:8080/api/errors/github \
+  -H "Content-Type: application/json" \
+  -d '{
+    "error_details": "Error: permission denied to access repository",
+    "context": "GitHub Actions workflow execution"
+  }'
+```
+
+#### ArgoCD Error
+```bash
+curl -X POST http://localhost:8080/api/errors/argocd \
+  -H "Content-Type: application/json" \
+  -d '{
+    "error_details": "sync failed: connection refused",
+    "context": "ArgoCD application sync"
+  }'
+```
+
+Response Format:
 ```json
 {
   "error": {
-    "causa": "Módulo Go não inicializado no projeto",
-    "solucao": "Execute go mod init para criar o módulo e suas dependências..."
+    "causa": "Nodes sem memória disponível",
+    "solucao": "kubectl describe nodes\nkubectl top nodes\nkubectl edit deployment/app-name"
   },
   "message": "Resolution retrieved successfully"
 }
 ```
-
-## 🔍 API Documentation
-
-Access Swagger UI at: 
-
-http://localhost:8080/swagger/index.html
-
-
 
 ## 📁 Project Structure
 
@@ -85,7 +100,17 @@ hefestus/
 │   └── services/        # Business logic
 ├── pkg/
 │   └── ollama/          # LLM client
+├── config/
+│   └── domains.json     # Domain configurations
+├── data/
+│   └── patterns/        # Error pattern dictionaries
+│       ├── kubernetes_errors.json
+│       ├── github_errors.json
+│       └── argocd_errors.json
 └── api/                 # API client library
+```
+
+[Rest of the README remains the same...]
 ```
 
 ## 📔 Swagger
