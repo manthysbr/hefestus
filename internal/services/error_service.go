@@ -5,9 +5,9 @@ import (
 	"hefestus-api/internal/models"
 )
 
-func ProcessError(req models.ErrorRequest) (models.ErrorResponse, error) {
+func ProcessError(req models.ErrorRequest) (*models.ErrorResponse, error) {
 	if req.ErrorDetails == "" {
-		return models.ErrorResponse{}, errors.New("error details cannot be empty")
+		return nil, errors.New("error details cannot be empty")
 	}
 
 	solution := &models.ErrorSolution{
@@ -15,7 +15,7 @@ func ProcessError(req models.ErrorRequest) (models.ErrorResponse, error) {
 		Solucao: "Contate o administrador",
 	}
 
-	return models.ErrorResponse{
+	return &models.ErrorResponse{
 		Error:   solution,
 		Message: "Possible resolutions retrieved successfully",
 	}, nil

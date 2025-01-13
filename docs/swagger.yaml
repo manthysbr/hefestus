@@ -1,6 +1,6 @@
 basePath: /api
 definitions:
-  hefestus-api_internal_models.ErrorRequest:
+  models.ErrorRequest:
     properties:
       context:
         example: Trying to run go build in new project
@@ -9,14 +9,14 @@ definitions:
         example: 'go: cannot find module providing package'
         type: string
     type: object
-  hefestus-api_internal_models.ErrorResponse:
+  models.ErrorResponse:
     properties:
       error:
-        $ref: '#/definitions/hefestus-api_internal_models.ErrorSolution'
+        $ref: '#/definitions/models.ErrorSolution'
       message:
         type: string
     type: object
-  hefestus-api_internal_models.ErrorSolution:
+  models.ErrorSolution:
     properties:
       causa:
         example: Módulo Go não inicializado
@@ -32,25 +32,34 @@ info:
   title: Hefestus API
   version: "1.0"
 paths:
-  /errors:
+  /errors/{domain}:
     post:
       consumes:
       - application/json
-      description: Get possible solutions for an error
+      description: Get possible solutions for an error by domain
       parameters:
+      - description: Domain (kubernetes, github, argocd)
+        enum:
+        - kubernetes
+        - github
+        - argocd
+        in: path
+        name: domain
+        required: true
+        type: string
       - description: Error details and context
         in: body
         name: request
         required: true
         schema:
-          $ref: '#/definitions/hefestus-api_internal_models.ErrorRequest'
+          $ref: '#/definitions/models.ErrorRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/hefestus-api_internal_models.ErrorResponse'
+            $ref: '#/definitions/models.ErrorResponse'
         "400":
           description: Bad Request
           schema:

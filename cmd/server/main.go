@@ -31,19 +31,26 @@ func init() {
 }
 
 // @Summary Get error resolution
-// @Description Get possible solutions for an error
+// @Description Get possible solutions for an error by domain
 // @Tags errors
 // @Accept json
 // @Produce json
+// @Param domain path string true "Domain (kubernetes, github, argocd)" Enums(kubernetes, github, argocd)
 // @Param request body models.ErrorRequest true "Error details and context"
 // @Success 200 {object} models.ErrorResponse
 // @Failure 400 {object} map[string]string
 // @Failure 500 {object} map[string]string
-// @Router /errors [post]
+// @Router /errors/{domain} [post]
 func main() {
 	r := gin.Default()
+
+	dictService, err := services.NewDictionaryService()
+	if err != nil {
+		log.Fatal("Failed to initialize dictionary service:", err)
+	}
+
 	ollamaClient := ollama.NewClient()
-	llmService := services.NewLLMService(ollamaClient)
+	llmService := services.NewLLMService(ollamaClient, dictService)
 
 	// Swagger routes
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
@@ -55,20 +62,17 @@ func main() {
 			c.JSON(200, gin.H{"status": "ok"})
 		})
 
-		api.POST("/errors", func(c *gin.Context) {
+		api.POST("/errors/:domain", func(c *gin.Context) {
+			domain := c.Param("domain")
 			var request models.ErrorRequest
 			if err := c.ShouldBindJSON(&request); err != nil {
 				c.JSON(400, gin.H{"error": err.Error()})
 				return
 			}
 
-			if request.ErrorDetails == "" {
-				c.JSON(400, gin.H{"error": "error_details is required"})
-				return
-			}
-
 			resolution, err := llmService.GetResolution(
 				c.Request.Context(),
+				domain,
 				request.ErrorDetails,
 				request.Context,
 			)

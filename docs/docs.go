@@ -15,9 +15,9 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/errors": {
+        "/errors/{domain}": {
             "post": {
-                "description": "Get possible solutions for an error",
+                "description": "Get possible solutions for an error by domain",
                 "consumes": [
                     "application/json"
                 ],
@@ -30,12 +30,24 @@ const docTemplate = `{
                 "summary": "Get error resolution",
                 "parameters": [
                     {
+                        "enum": [
+                            "kubernetes",
+                            "github",
+                            "argocd"
+                        ],
+                        "type": "string",
+                        "description": "Domain (kubernetes, github, argocd)",
+                        "name": "domain",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
                         "description": "Error details and context",
                         "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/hefestus-api_internal_models.ErrorRequest"
+                            "$ref": "#/definitions/models.ErrorRequest"
                         }
                     }
                 ],
@@ -43,7 +55,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/hefestus-api_internal_models.ErrorResponse"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "400": {
@@ -69,7 +81,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "hefestus-api_internal_models.ErrorRequest": {
+        "models.ErrorRequest": {
             "type": "object",
             "properties": {
                 "context": {
@@ -82,18 +94,18 @@ const docTemplate = `{
                 }
             }
         },
-        "hefestus-api_internal_models.ErrorResponse": {
+        "models.ErrorResponse": {
             "type": "object",
             "properties": {
                 "error": {
-                    "$ref": "#/definitions/hefestus-api_internal_models.ErrorSolution"
+                    "$ref": "#/definitions/models.ErrorSolution"
                 },
                 "message": {
                     "type": "string"
                 }
             }
         },
-        "hefestus-api_internal_models.ErrorSolution": {
+        "models.ErrorSolution": {
             "type": "object",
             "properties": {
                 "causa": {

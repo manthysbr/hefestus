@@ -1,0 +1,26 @@
+{
+    "patterns": {
+      "insufficient_resources": {
+        "pattern": "\\b(insufficient|not enough)\\s+(cpu|memory|resources)\\b",
+        "category": "RESOURCE_LIMITS",
+        "solutions": [
+          "Adjust resource requests and limits in deployment",
+          "Check node resources availability"
+        ],
+        "references": [
+          "https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+        ]
+      },
+      "pod_crash_loop": {
+        "pattern": "CrashLoopBackOff",
+        "category": "POD_LIFECYCLE",
+        "solutions": [
+          "Check container logs using kubectl logs",
+          "Verify container health checks"
+        ],
+        "references": [
+          "https://kubernetes.io/docs/tasks/debug/debug-application/debug-pods/"
+        ]
+      }
+    }
+  }

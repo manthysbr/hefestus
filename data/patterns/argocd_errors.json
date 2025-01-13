@@ -1,0 +1,26 @@
+{
+    "patterns": {
+      "sync_failed": {
+        "pattern": "sync failed|unable to sync",
+        "category": "SYNC",
+        "solutions": [
+          "Check Git repository connectivity",
+          "Verify ArgoCD application manifest"
+        ],
+        "references": [
+          "https://argo-cd.readthedocs.io/en/stable/user-guide/sync-options/"
+        ]
+      },
+      "helm_error": {
+        "pattern": "helm (chart|template) error",
+        "category": "HELM",
+        "solutions": [
+          "Validate Helm values",
+          "Check Helm template syntax"
+        ],
+        "references": [
+          "https://argo-cd.readthedocs.io/en/stable/user-guide/helm/"
+        ]
+      }
+    }
+  }

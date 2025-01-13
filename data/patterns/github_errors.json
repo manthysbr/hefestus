@@ -1,0 +1,26 @@
+{
+    "patterns": {
+      "permission_denied": {
+        "pattern": "permission denied|insufficient access|not authorized",
+        "category": "PERMISSIONS",
+        "solutions": [
+          "Check repository permissions",
+          "Verify GitHub token scopes"
+        ],
+        "references": [
+          "https://docs.github.com/en/actions/security-guides/automatic-token-authentication"
+        ]
+      },
+      "workflow_syntax": {
+        "pattern": "Invalid workflow file",
+        "category": "SYNTAX",
+        "solutions": [
+          "Validate YAML syntax",
+          "Check workflow file indentation"
+        ],
+        "references": [
+          "https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions"
+        ]
+      }
+    }
+  }
