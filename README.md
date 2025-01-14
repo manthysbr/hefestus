@@ -23,9 +23,32 @@ O Hefestus foi desenvolvido como um projeto de estudo para explorar:
 
 Você pode configurar o Hefestus para receber erros de endpoints ou pipelines e obter soluções diretamente no console ou em outros sistemas integrados.  
 
-Particularmente, eu gosto muito do  tema `observabilidade` e queria construir algo que pudesse maximizar o efeito de ferramentas open-source como o `Zabbix` e o `Rundeck`. Então construi o hefestus pra ser parte de uma solução que monitora, detecta, resolve e comunica times usando apenas ferramentas open-source, incluindo agentes de IA no fluxo, para a resolução dos problemas. O hefestus entra nesse meio, interpretando o erro e encaminhando a resposta para o próximo agente.
+Particularmente, eu gosto muito do  tema `observabilidade` e queria construir algo que pudesse maximizar o efeito de ferramentas open-source como o `Zabbix` e o `Rundeck`. 
+
+Então construi o hefestus pra ser parte de uma solução que `monitora, detecta, resolve e comunica` times usando apenas ferramentas open-source, incluindo agentes de IA no fluxo, para a resolução dos problemas. O hefestus entra nesse meio, interpretando o erro e encaminhando a resposta para o próximo agente, com o poder de invocar os scripts do rundeck de acordo com a compreensão do erro, sendo mais assertivo naquele primeiro momento de problema.
+
+No caso de integração com pipelines, a idéia é semelhante, capturar o erro e passar pelo endpoint da API, obtendo no final uma sugestão de solução para o cliente final, usuário da pipeline.
 
 A idéia é usar a API como um `man-in-the-middle` entre o conteúdo do log e a automação de `self-healing`.
+
+
+```mermaid
+sequenceDiagram
+    participant Zabbix
+    participant Hefestus
+    participant Rundeck
+    
+    Zabbix->>Hefestus: POST /api/errors/{domain}<br/>(error_details, context)
+    Note over Hefestus: Processa erro usando LLM<br/>Identifica padrões<br/>Gera solução
+    
+    alt Erro Conhecido
+        Hefestus->>Rundeck: Invoca job específico<br/>para auto-correção
+        Rundeck->>Hefestus: Executa script de<br/>self-healing
+        Hefestus->>Zabbix: Retorna status<br/>da resolução
+    else Erro Novo
+        Hefestus->>Zabbix: Retorna sugestão<br/>de resolução manual
+    end
+```
 
 ---
 
