@@ -41,9 +41,7 @@ graph LR
     LLM --> |Pattern Match| Decision{Conhecido?}
     Decision --> |Sim| Rundeck(Rundeck)
     Rundeck --> |Executa| Healing[Self-Healing Script]
-    Decision --> |Não| Model-based-suggestion[Sugestao do modelo]
     Healing --> |Status| Response[Retorna Resultado]
-    Manual --> |Solução| Response
 ```
 
 ---
