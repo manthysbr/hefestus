@@ -1,13 +1,15 @@
-# Hefestus API 🚀
+<h1 align="center">Hefestus API 🚀</h1>
 
 <p align="center">
-  <img src="https://i.imgur.com/XtFFuge.png" alt="Hefestus Logo" width="200" height="200"/>
+  <img src="https://i.imgur.com/XtFFuge.png" alt="Hefestus Logo" width="500" height="500"/>
 </p>
 
-[![Go Version](https://img.shields.io/github/go-mod/go-version/yourusername/hefestus)](https://go.dev/)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](#)
-[![Swagger Docs](https://img.shields.io/badge/docs-Swagger-85EA2D)](#📖-documentação)
+<p align="center">
+  <a href="https://go.dev/"><img src="https://img.shields.io/github/go-mod/go-version/yourusername/hefestus" alt="Go Version"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
+  <a href="#"><img src="https://img.shields.io/badge/build-passing-brightgreen" alt="Build Status"></a>
+  <a href="#📖-documentação"><img src="https://img.shields.io/badge/docs-Swagger-85EA2D" alt="Swagger Docs"></a>
+</p>
 
 **Hefestus** é uma API escrita em Go que utiliza modelos de linguagem (LLMs) locais via **Ollama** para analisar e resolver erros de desenvolvimento em múltiplos domínios, como **Kubernetes**, **GitHub Actions**, e **ArgoCD**.
 
@@ -23,7 +25,8 @@ Você pode configurar o Hefestus para receber erros de endpoints ou pipelines e 
 
 
 ## 📔 Contexto
-Eu gosto muito do  tema `observabilidade` e queria construir algo que pudesse maximizar o efeito de ferramentas open-source como o `Zabbix` e o `Rundeck`. Então consturi o hefestus pra ser parte de uma solução que monitora, detecta, resolve e comunica times usando apenas ferramentas open-source, incluindo agentes de IA no fluxo, para a resolução dos problemas. O hefestus entra nesse meio, interpretando o erro e encaminhando a resposta para o próximo agente.
+Eu gosto muito do  tema `observabilidade` e queria construir algo que pudesse maximizar o efeito de ferramentas open-source como o `Zabbix` e o `Rundeck`. Então construi o hefestus pra ser parte de uma solução que monitora, detecta, resolve e comunica times usando apenas ferramentas open-source, incluindo agentes de IA no fluxo, para a resolução dos problemas. O hefestus entra nesse meio, interpretando o erro e encaminhando a resposta para o próximo agente.
+A idéia é que ele seja um `man-in-the-middle` entre o conteúdo do log e a automação de `self-healing`.
 ---
 
 ## 🌟 Principais recursos
