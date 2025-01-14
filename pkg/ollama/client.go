@@ -46,6 +46,23 @@ type DomainConfig struct {
 	Parameters     map[string]interface{} `json:"parameters"`
 }
 
+type LLMResponse struct {
+	Causa   string   `json:"causa"`
+	Solucao []string `json:"solucao"`
+}
+
+func isValidJSON(str string) bool {
+	var js json.RawMessage
+	return json.Unmarshal([]byte(str), &js) == nil
+}
+
+func cleanResponse(response string) string {
+	// Remove markdown code blocks
+	response = strings.TrimPrefix(response, "```json")
+	response = strings.TrimSuffix(response, "```")
+	return strings.TrimSpace(response)
+}
+
 func (c *Client) Query(ctx context.Context, errorDetails string, domain string, errorContext string) (string, string, error) {
 	// Load domain configuration
 	data, err := os.ReadFile("config/domains.json")
@@ -67,17 +84,18 @@ func (c *Client) Query(ctx context.Context, errorDetails string, domain string, 
 
 	// Format instructions
 	const formatInstructions = `
-IMPORTANTE: Responda EXATAMENTE neste formato:
+IMPORTANTE: Retorne APENAS um objeto JSON válido no seguinte formato:
 
-CAUSA: [MÁXIMO 5 PALAVRAS, NUNCA MAIS DO QUE ISSO]
-SOLUCAO: [uma sugestão de solução por linha, MÁXIMO ATÉ DUAS SUGESTÕES]
+{
+    "causa": "[máximo 4 palavras]",
+    "solucao": ["comando 1", "comando 2"]
+}
 
-REGRAS:
-1. CAUSA deve ter NO MÁXIMO 4 palavras
-2. SOLUCAO deve ter comandos ou explicações simples, um por linha
-3. Não use && ou comandos compostos
-4. Não adicione explicações
-5. Sem formatação ou numeração`
+REGRAS ESTRITAS:
+1. Retorne APENAS o JSON, sem markdown ou formatação
+2. causa deve ter NO MÁXIMO 4 palavras
+3. solucao deve ter array de comandos simples
+4. Não use && ou comandos compostos`
 
 	// Combine template with instructions
 	promptTemplate := fmt.Sprintf("%s\n%s\n\nERRO: {{.Error}}\nCONTEXTO: {{.Context}}",
@@ -139,55 +157,28 @@ REGRAS:
 
 	log.Printf("Raw LLM response: %s", apiResponse.Response)
 
-	// Enhanced response parsing
-	response := strings.TrimSpace(apiResponse.Response)
-	lines := strings.Split(response, "\n")
-
-	var causa string
-	var solucaoLines []string
-	var parsingSolucao bool
-
-	for _, line := range lines {
-		line = strings.TrimSpace(line)
-		if line == "" {
-			continue
-		}
-
-		if strings.HasPrefix(line, "CAUSA:") {
-			causa = strings.TrimSpace(strings.TrimPrefix(line, "CAUSA:"))
-			// Validate causa length
-			if len(strings.Fields(causa)) > 5 {
-				return "", "", fmt.Errorf("causa must have maximum 5 words")
-			}
-		} else if strings.HasPrefix(line, "SOLUCAO:") {
-			parsingSolucao = true
-		} else if parsingSolucao {
-			// Clean up the command
-			line = strings.TrimLeft(line, "0123456789.- *")
-			line = strings.TrimSpace(line)
-			if line != "" {
-				// Split compound commands
-				if strings.Contains(line, "&&") {
-					commands := strings.Split(line, "&&")
-					for _, cmd := range commands {
-						cmd = strings.TrimSpace(cmd)
-						if cmd != "" {
-							solucaoLines = append(solucaoLines, cmd)
-						}
-					}
-				} else {
-					solucaoLines = append(solucaoLines, line)
-				}
-			}
-		}
+	// Clean and validate response
+	cleanedResponse := cleanResponse(apiResponse.Response)
+	if !isValidJSON(cleanedResponse) {
+		log.Printf("Invalid JSON format detected: %s", cleanedResponse)
+		return "", "", fmt.Errorf("invalid JSON response from LLM")
 	}
 
-	if causa == "" || len(solucaoLines) == 0 {
-		log.Printf("Invalid format detected in response:\n%s", response)
+	var llmResponse LLMResponse
+	if err := json.Unmarshal([]byte(cleanedResponse), &llmResponse); err != nil {
+		log.Printf("Failed to parse LLM response: %v\nCleaned response: %s", err, cleanedResponse)
 		return "", "", fmt.Errorf("invalid response format from LLM")
 	}
 
-	solucao := strings.Join(solucaoLines, "\n")
+	// Validate response content
+	if llmResponse.Causa == "" || len(llmResponse.Solucao) == 0 {
+		return "", "", fmt.Errorf("invalid response content from LLM")
+	}
 
-	return causa, solucao, nil
+	// Validate causa word count
+	if len(strings.Fields(llmResponse.Causa)) > 4 {
+		return "", "", fmt.Errorf("causa exceeds maximum word count")
+	}
+
+	return llmResponse.Causa, strings.Join(llmResponse.Solucao, "\n"), nil
 }
