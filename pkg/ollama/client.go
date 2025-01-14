@@ -67,17 +67,17 @@ func (c *Client) Query(ctx context.Context, errorDetails string, domain string, 
 
 	// Format instructions
 	const formatInstructions = `
-IMPORTANTE: Responda EXATAMENTE neste formato sem NENHUM texto adicional:
+IMPORTANTE: Responda EXATAMENTE neste formato:
 
-CAUSA: [máximo 4 palavras]
-SOLUCAO: [apenas comandos, um por linha]
+CAUSA: [MÁXIMO 5 PALAVRAS, NUNCA MAIS DO QUE ISSO]
+SOLUCAO: [uma sugestão de solução por linha, MÁXIMO ATÉ DUAS SUGESTÕES]
 
-REGRAS ESTRITAS:
-1. Use EXATAMENTE os marcadores CAUSA: e SOLUCAO:
-2. Não adicione numeração ou formatação
-3. Não faça explicações ou comentários
-4. Não repita o erro ou contexto
-5. Mantenha a resposta técnica e direta`
+REGRAS:
+1. CAUSA deve ter NO MÁXIMO 4 palavras
+2. SOLUCAO deve ter comandos ou explicações simples, um por linha
+3. Não use && ou comandos compostos
+4. Não adicione explicações
+5. Sem formatação ou numeração`
 
 	// Combine template with instructions
 	promptTemplate := fmt.Sprintf("%s\n%s\n\nERRO: {{.Error}}\nCONTEXTO: {{.Context}}",
@@ -141,12 +141,11 @@ REGRAS ESTRITAS:
 
 	// Enhanced response parsing
 	response := strings.TrimSpace(apiResponse.Response)
-
-	// Split por linhas e processa
 	lines := strings.Split(response, "\n")
-	var causa, solucao string
-	inSolucao := false
+
+	var causa string
 	var solucaoLines []string
+	var parsingSolucao bool
 
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
@@ -156,28 +155,39 @@ REGRAS ESTRITAS:
 
 		if strings.HasPrefix(line, "CAUSA:") {
 			causa = strings.TrimSpace(strings.TrimPrefix(line, "CAUSA:"))
+			// Validate causa length
+			if len(strings.Fields(causa)) > 5 {
+				return "", "", fmt.Errorf("causa must have maximum 5 words")
+			}
 		} else if strings.HasPrefix(line, "SOLUCAO:") {
-			inSolucao = true
-		} else if inSolucao {
-			// Remove qualquer numeração ou formatação
+			parsingSolucao = true
+		} else if parsingSolucao {
+			// Clean up the command
 			line = strings.TrimLeft(line, "0123456789.- *")
 			line = strings.TrimSpace(line)
 			if line != "" {
-				solucaoLines = append(solucaoLines, line)
+				// Split compound commands
+				if strings.Contains(line, "&&") {
+					commands := strings.Split(line, "&&")
+					for _, cmd := range commands {
+						cmd = strings.TrimSpace(cmd)
+						if cmd != "" {
+							solucaoLines = append(solucaoLines, cmd)
+						}
+					}
+				} else {
+					solucaoLines = append(solucaoLines, line)
+				}
 			}
 		}
 	}
 
-	// Validação mais estrita
 	if causa == "" || len(solucaoLines) == 0 {
 		log.Printf("Invalid format detected in response:\n%s", response)
 		return "", "", fmt.Errorf("invalid response format from LLM")
 	}
 
-	// Limpa caracteres especiais
-	causa = strings.Trim(causa, `"*_ `)
-	solucao = strings.Join(solucaoLines, "\n")
-	solucao = strings.Trim(solucao, `"*_ `)
+	solucao := strings.Join(solucaoLines, "\n")
 
 	return causa, solucao, nil
 }

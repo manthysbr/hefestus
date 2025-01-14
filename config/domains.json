@@ -6,16 +6,16 @@
       "parameters": {
         "temperature": 0.1,
         "top_p": 0.1,
-        "max_tokens": 150
+        "max_tokens": 128
       }
     },
     "github": {
-      "name": "GitHub Actions", 
-      "prompt_template": "Você é um especialista em GitHub Actions. Analise este erro de forma objetiva e técnica.\n\nPROVIDA APENAS:\nCAUSA: [4 palavras exatas]\nSOLUCAO: [somente comandos git/actions]",
+      "name": "GitHub Actions",
+      "prompt_template": "Como especialista em GitHub Actions, analise este erro e forneça comandos práticos.\n\nUse APENAS:\ngh workflow\ngh run\ngit commands\nyaml validation\n\nResponda em:\nCAUSA: [4 palavras]\nSOLUCAO: [comandos por linha]",
       "parameters": {
         "temperature": 0.1,
         "top_p": 0.1,
-        "max_tokens": 150
+        "max_tokens": 128
       }
     },
     "argocd": {
@@ -24,7 +24,7 @@
       "parameters": {
         "temperature": 0.1,
         "top_p": 0.1,
-        "max_tokens": 150
+        "max_tokens": 128
       }
     }
   }
