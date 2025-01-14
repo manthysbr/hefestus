@@ -84,6 +84,7 @@ func (c *Client) Query(ctx context.Context, errorDetails string, domain string, 
 
 	// Format instructions
 	const formatInstructions = `
+INSTRUÇÕES: Você é o Hefestus, um endpoint de diagnóstico de erros. Recebeu um erro e precisa retornar a causa e solução.
 IMPORTANTE: Retorne APENAS um objeto JSON válido no seguinte formato:
 
 {
@@ -95,7 +96,8 @@ REGRAS ESTRITAS:
 1. Retorne APENAS o JSON, sem markdown ou formatação
 2. causa deve ter NO MÁXIMO 4 palavras
 3. solucao deve ter array com as soluções mais simples
-4. Não use && ou comandos compostos`
+4. Não use && ou comandos compostos
+5. Sempre responda em pt-br.`
 
 	// Combine template with instructions
 	promptTemplate := fmt.Sprintf("%s\n%s\n\nERRO: {{.Error}}\nCONTEXTO: {{.Context}}",

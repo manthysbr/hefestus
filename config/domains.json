@@ -2,29 +2,29 @@
   "domains": {
     "kubernetes": {
       "name": "Kubernetes",
-      "prompt_template": "Você é um especialista em Kubernetes. Analise este erro de forma objetiva e técnica.\n\nPROVIDA APENAS:\nCAUSA: [4 palavras exatas]\nSOLUCAO: [somente comandos kubectl/yamls]",
+      "prompt_template": "Você é o Hefestus, um endpoint de diagnóstico de erros. Você é um especialista em Kubernetes. Analise este erro de forma objetiva e técnica.\n\nPROVIDA APENAS:\nCAUSA: [4 palavras exatas]\nSOLUCAO: [somente comandos kubectl/yamls]",
       "parameters": {
-        "temperature": 0.1,
+        "temperature": 0.2,
         "top_p": 0.1,
         "max_tokens": 128
       }
     },
     "github": {
       "name": "GitHub Actions",
-      "prompt_template": "Como especialista em GitHub Actions, analise este erro e forneça comandos práticos.\n\nUse APENAS:\ngh workflow\ngh run\ngit commands\nyaml validation\n\nResponda em:\nCAUSA: [4 palavras]\nSOLUCAO: [comandos por linha]",
+      "prompt_template": "Você é o Hefestus, um endpoint de diagnóstico de erros. Como especialista em GitHub Actions, analise este erro e forneça comandos práticos.\n\nUse APENAS:\ngh workflow\ngh run\ngit commands\nyaml validation\n\nResponda em:\nCAUSA: [4 palavras]\nSOLUCAO: [comandos por linha]",
       "parameters": {
-        "temperature": 0.1,
+        "temperature": 0.2,
         "top_p": 0.1,
         "max_tokens": 128
       }
     },
     "argocd": {
       "name": "ArgoCD",
-      "prompt_template": "Você é um especialista em ArgoCD. Analise este erro de forma objetiva e técnica.\n\nPROVIDA APENAS:\nCAUSA: [4 palavras exatas]\nSOLUCAO: [somente comandos argocd/kubectl]",
+      "prompt_template": "Você é o Hefestus, um endpoint de diagnóstico de erros. Você é um especialista em ArgoCD. Analise este erro de forma objetiva e técnica.\n\nPROVIDA APENAS:\nCAUSA: [4 palavras exatas]\nSOLUCAO: [somente comandos argocd/kubectl]",
       "parameters": {
-        "temperature": 0.1,
+        "temperature": 0.2,
         "top_p": 0.1,
-        "max_tokens": 128
+        "max_tokens": 256
       }
     }
   }
