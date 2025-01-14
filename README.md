@@ -33,21 +33,15 @@ A idéia é usar a API como um `man-in-the-middle` entre o conteúdo do log e a 
 
 
 ```mermaid
-sequenceDiagram
-    participant Zabbix
-    participant Hefestus
-    participant Rundeck
-    
-    Zabbix->>Hefestus: POST /api/errors/{domain}<br/>(error_details, context)
-    Note over Hefestus: Processa erro usando LLM<br/>Identifica padrões<br/>Gera solução
-    
-    alt Erro Conhecido
-        Hefestus->>Rundeck: Invoca job específico<br/>para auto-correção
-        Rundeck->>Hefestus: Executa script de<br/>self-healing
-        Hefestus->>Zabbix: Retorna status<br/>da resolução
-    else Erro Novo
-        Hefestus->>Zabbix: Retorna sugestão<br/>de resolução manual
-    end
+graph LR
+    Zabbix(Zabbix) --> |POST /api/errors/domain| Hefestus(Hefestus)
+    Hefestus --> |Processa Erro| LLM[LLM Processing]
+    LLM --> |Pattern Match| Decision{Conhecido?}
+    Decision --> |Sim| Rundeck(Rundeck)
+    Rundeck --> |Executa| Healing[Self-Healing Script]
+    Decision --> |Não| Manual[Sugestão Manual]
+    Healing --> |Status| Response[Retorna Resultado]
+    Manual --> |Solução| Response
 ```
 
 ---
