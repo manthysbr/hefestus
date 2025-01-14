@@ -31,6 +31,8 @@ No caso de integração com pipelines, a idéia é semelhante, capturar o erro e
 
 A idéia é usar a API como um `man-in-the-middle` entre o conteúdo do log e a automação de `self-healing`.
 
+Algo mais ou menos assim:
+
 
 ```mermaid
 graph LR
@@ -39,7 +41,7 @@ graph LR
     LLM --> |Pattern Match| Decision{Conhecido?}
     Decision --> |Sim| Rundeck(Rundeck)
     Rundeck --> |Executa| Healing[Self-Healing Script]
-    Decision --> |Não| Manual[Sugestão Manual]
+    Decision --> |Não| Model-based suggestion[Sugestão do modelo]
     Healing --> |Status| Response[Retorna Resultado]
     Manual --> |Solução| Response
 ```
