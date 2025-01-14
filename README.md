@@ -1,5 +1,9 @@
 # Hefestus API 🚀
 
+<p align="center">
+  <img src="https://i.imgur.com/XtFFuge.png" alt="Hefestus Logo" width="200" height="200"/>
+</p>
+
 [![Go Version](https://img.shields.io/github/go-mod/go-version/yourusername/hefestus)](https://go.dev/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](#)
