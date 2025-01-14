@@ -35,13 +35,17 @@ Algo mais ou menos assim:
 
 
 ```mermaid
-graph LR
+flowchart LR
     Zabbix(Zabbix) --> |POST /api/errors/domain| Hefestus(Hefestus)
     Hefestus --> |Processa Erro| LLM[LLM Processing]
     LLM --> |Pattern Match| Decision{Conhecido?}
-    Decision --> |Sim| Rundeck(Rundeck)
+    Decision --> |Sim| Decision2{Pattern Específico?}
+    Decision2 --> |Executa Self-Healing| Rundeck(Rundeck)
     Rundeck --> |Executa| Healing[Self-Healing Script]
     Healing --> |Status| Response[Retorna Resultado]
+    Decision2 --> |Envia Mensagem| SlackTeams[Slack & Teams]
+    SlackTeams --> |Notificação| Response2[Retorna Notificação]
+    Decision --> |Não| Response3[Mensagem sem contexto do erro]
 ```
 
 ---
