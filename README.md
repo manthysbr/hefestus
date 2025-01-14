@@ -196,6 +196,14 @@ Exemplo de configuração de domínio (`domains.json`):
 
 ---
 
+## Exemplos de swagger e curl:
+
+![image1](https://github.com/manthysbr/hefestus/blob/main/img/image1.png)
+![image2](https://github.com/manthysbr/hefestus/blob/main/img/image2.png)
+![image3](https://github.com/manthysbr/hefestus/blob/main/img/image3.png)
+
+---
+
 ## 💡 Contribuindo
 
 Apesar de um projeto de estudo, contribuições são bem-vindas! Para contribuir:
