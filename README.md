@@ -13,13 +13,16 @@
 
 O Hefestus foi desenvolvido como um projeto de estudo para explorar:
 - Como utilizar **Golang** para criar uma API de troubleshooting de erros de desenvolvimento.
-- Ideias inovadoras para integrar detecção de erros e automação de solução em pipelines de CI/CD e outras ferramentas (e.g., Teams, Slack, GitHub).
+- Algumas ideias para integrar detecção de erros e automação de solução em pipelines de CI/CD e outras ferramentas (e.g., Teams, Slack, GitHub).
 
 Você pode configurar o Hefestus para receber erros de endpoints ou pipelines e obter soluções diretamente no console ou em outros sistemas integrados.
 
+
+## 📔 Contexto
+Eu gosto muito do  tema `observabilidade` e queria construir algo que pudesse maximizar o efeito de ferramentas open-source como o `Zabbix` e o `Rundeck`. Então consturi o hefestus pra ser parte de uma solução que monitora, detecta, resolve e comunica times usando apenas ferramentas open-source, incluindo agentes de IA no fluxo, para a resolução dos problemas. O hefestus entra nesse meio, interpretando o erro e encaminhando a resposta para o próximo agente.
 ---
 
-## 🌟 Principais Recursos
+## 🌟 Principais recursos
 
 | Funcionalidade               | Descrição                                                                                       |
 |------------------------------|-------------------------------------------------------------------------------------------------|
@@ -31,17 +34,17 @@ Você pode configurar o Hefestus para receber erros de endpoints ou pipelines e 
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+## 🛠️ Tecnologias utilizadas
 
 - **Go 1.21+**: Linguagem de programação principal.
 - **Gin**: Framework web para construção da API.
-- **Ollama**: Para processar modelos de linguagem localmente.
-- **Swagger**: Documentação interativa da API.
-- **Docker**: Containerização para fácil deploy.
+- **Ollama**: Para processar modelos de linguagem localmente e fazer com que as respostas sejam específicas.
+- **Swagger**: Documentação interativa da API, para ficar fácil de navegar, apesar de no momento só possuir um endpoint.
+- **Docker**: Containerização para fácil deploy local.
 
 ---
 
-## 📚 Estrutura do Projeto
+## 📚 Estrutura do projeto
 
 ```plaintext
 hefestus/
@@ -58,7 +61,7 @@ hefestus/
 
 ---
 
-## 🚀 Como Usar?
+## 🚀 Como usar?
 
 ### Pré-requisitos
 
@@ -79,7 +82,7 @@ go run cmd/server/main.go
 
 ## 🔍 Exemplos de Uso
 
-### **Exemplo de Erro no Kubernetes**
+### **Exemplo de erro no kubernetes**
 ```bash
 curl -X POST http://localhost:8080/api/errors/kubernetes \
   -H "Content-Type: application/json" \
@@ -110,12 +113,12 @@ http://localhost:8080/swagger/index.html
 
 ## 🐳 Docker
 
-### Build da Imagem
+### Build da imagem docker
 ```bash
 docker build -t hefestus:latest .
 ```
 
-### Executar o Container
+### Executar o container
 ```bash
 docker run -d \
     -p 8080:8080 \
@@ -126,9 +129,9 @@ docker run -d \
 
 ---
 
-## 🔧 Configurações Internas
+## 🔧 Outras configs...
 
-### Estrutura de Chaveamento por Domínio
+### Estrutura de chaveamento por domínio
 
 Exemplo de configuração de domínio (`domains.json`):
 ```json
@@ -147,7 +150,7 @@ Exemplo de configuração de domínio (`domains.json`):
 }
 ```
 
-### Exemplo de Padrão de Erro
+### Exemplo de `error_pattern`
 ```json
 {
   "patterns": {
@@ -167,7 +170,7 @@ Exemplo de configuração de domínio (`domains.json`):
 
 ## 💡 Contribuindo
 
-Contribuições são bem-vindas! Para contribuir:
+Apesar de um projeto de estudo, contribuições são bem-vindas! Para contribuir:
 1. Faça um fork do repositório.
 2. Crie um branch para sua feature ou correção: `git checkout -b minha-feature`.
 3. Faça um commit das suas alterações: `git commit -m 'Adiciona minha nova feature'`.
@@ -184,6 +187,6 @@ Este projeto está licenciado sob a [MIT License](LICENSE).
 
 ## 📫 Contato
 
-Se você tiver dúvidas, entre em contato via [GitHub Issues](https://github.com/yourusername/hefestus/issues) ou envie um e-mail para `email@domain.com`.
+Se você tiver dúvidas, entre em contato via [GitHub Issues](https://github.com/yourusername/hefestus/issues) e ficarei contente em responder você ^^;
 
 ---
