@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <a href="https://go.dev/"><img src="https://img.shields.io/github/go-mod/go-version/yourusername/hefestus" alt="Go Version"></a>
+  <a href="https://go.dev/"><img src="https://img.shields.io/github/go-mod/go-version/manthysbr/hefestus" alt="Go Version"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
   <a href="#"><img src="https://img.shields.io/badge/build-passing-brightgreen" alt="Build Status"></a>
   <a href="#📖-documentação"><img src="https://img.shields.io/badge/docs-Swagger-85EA2D" alt="Swagger Docs"></a>
