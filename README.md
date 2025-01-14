@@ -8,30 +8,30 @@
   <a href="https://go.dev/"><img src="https://img.shields.io/github/go-mod/go-version/manthysbr/hefestus" alt="Go Version"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
   <a href="#"><img src="https://img.shields.io/badge/build-passing-brightgreen" alt="Build Status"></a>
-  <a href="#📖-documentação"><img src="https://img.shields.io/badge/docs-Swagger-85EA2D" alt="Swagger Docs"></a>
+  <a href="#📖-documentation"><img src="https://img.shields.io/badge/docs-Swagger-85EA2D" alt="Swagger Docs"></a>
 </p>
 
-**Hefestus** é uma API escrita em Go que utiliza modelos de linguagem (LLMs) locais via **Ollama** para analisar e resolver erros de desenvolvimento em múltiplos domínios, como **Kubernetes**, **GitHub Actions**, e **ArgoCD**.
+**Hefestus** is a Go API that uses local Language Models (LLMs) via **Ollama** to analyze and resolve development errors across multiple domains, such as **Kubernetes**, **GitHub Actions**, and **ArgoCD**.
 
 ---
 
-## 🎯 Objetivo  
+## 🎯 Objective
 
-O Hefestus foi desenvolvido como um projeto de estudo para explorar:
-- Como utilizar **Golang** para criar uma API de troubleshooting de erros de desenvolvimento.
-- Algumas ideias para integrar detecção de erros e automação de solução em pipelines de CI/CD e outras ferramentas (e.g., Teams, Slack, GitHub).
+Hefestus was developed as a study project to explore:
+- How to use **Golang** to create a development error troubleshooting API.
+- Ideas for integrating error detection and solution automation in CI/CD pipelines and other tools (e.g., Teams, Slack, GitHub).
 
-Você pode configurar o Hefestus para receber erros de endpoints ou pipelines e obter soluções diretamente no console ou em outros sistemas integrados.  
+You can configure Hefestus to receive errors from endpoints or pipelines and get solutions directly in the console or other integrated systems.
 
-Particularmente, eu gosto muito do  tema `observabilidade` e queria construir algo que pudesse maximizar o efeito de ferramentas open-source como o `Zabbix` e o `Rundeck`. 
+I particularly enjoy the topic of `observability` and wanted to build something that could maximize the effect of open-source tools like `Zabbix` and `Rundeck`.
 
-Então construi o hefestus pra ser parte de uma solução que `monitora, detecta, resolve e comunica` times usando apenas ferramentas open-source, incluindo agentes de IA no fluxo, para a resolução dos problemas. O hefestus entra nesse meio, interpretando o erro e encaminhando a resposta para o próximo agente, com o poder de invocar os scripts do rundeck de acordo com a compreensão do erro, sendo mais assertivo naquele primeiro momento de problema.
+So I built Hefestus to be part of a solution that `monitors, detects, resolves and communicates` with teams using only open-source tools, including AI agents in the flow, for problem resolution. Hefestus fits in the middle, interpreting the error and forwarding the response to the next agent, with the power to invoke Rundeck scripts based on error understanding, being more assertive in that first moment of a problem.
 
-No caso de integração com pipelines, a idéia é semelhante, capturar o erro e passar pelo endpoint da API, obtendo no final uma sugestão de solução para o cliente final, usuário da pipeline.
+For pipeline integration, the idea is similar: capture the error and pass it through the API endpoint, ultimately obtaining a solution suggestion for the end user of the pipeline.
 
-A idéia é usar a API como um `man-in-the-middle` entre o conteúdo do log e a automação de `self-healing`.
+The idea is to use the API as a `man-in-the-middle` between the log content and the `self-healing` automation.
 
-Algo mais ou menos assim:
+Something like this:
 
 
 ```mermaid
@@ -50,54 +50,54 @@ flowchart LR
 
 ---
 
-## 🌟 Principais recursos
+## 🌟 Key Features
 
-| Funcionalidade               | Descrição                                                                                       |
-|------------------------------|-------------------------------------------------------------------------------------------------|
-| **Arquitetura Multi-Domínio**| Processamento dinâmico com prompts especializados para cada domínio (e.g., Kubernetes, GitHub). |
-| **Integração com LLMs**      | Usa **Ollama** para processar modelos open-source localmente com prompts otimizados.            |
-| **Dicionários de Erros**     | Banco de dados com padrões de erros por domínio, aumentando a precisão das soluções.           |
-| **Swagger UI**               | Documentação interativa para testar endpoints da API.                                          |
-| **Controle de Parâmetros**   | Ajustes finos por domínio: temperatura, tokens, etc.                                           |
-
----
-
-## 🛠️ Tecnologias utilizadas
-
-- **Go 1.21+**: Linguagem de programação principal.
-- **Gin**: Framework web para construção da API.
-- **Ollama**: Para processar modelos de linguagem localmente e fazer com que as respostas sejam específicas.
-- **Swagger**: Documentação interativa da API, para ficar fácil de navegar, apesar de no momento só possuir um endpoint.
-- **Docker**: Containerização para fácil deploy local.
+| Feature                    | Description                                                                                    |
+|---------------------------|------------------------------------------------------------------------------------------------|
+| **Multi-Domain Architecture**| Dynamic processing with specialized prompts for each domain (e.g., Kubernetes, GitHub).       |
+| **LLM Integration**        | Uses **Ollama** to process open-source models locally with optimized prompts.                  |
+| **Error Dictionaries**     | Database with error patterns by domain, increasing solution accuracy.                          |
+| **Swagger UI**             | Interactive documentation for testing API endpoints.                                           |
+| **Parameter Control**      | Fine-tuning by domain: temperature, tokens, etc.                                              |
 
 ---
 
-## 📚 Estrutura do projeto
+## 🛠️ Technologies Used
+
+- **Go 1.21+**: Main programming language.
+- **Gin**: Web framework for API construction.
+- **Ollama**: For processing language models locally and making responses specific.
+- **Swagger**: Interactive API documentation, for easy navigation, although currently with only one endpoint.
+- **Docker**: Containerization for easy local deployment.
+
+---
+
+## 📚 Structure 
 
 ```plaintext
 hefestus/
-├── cmd/server/          # Ponto de entrada da aplicação
+├── cmd/server/          # entrypoint
 ├── internal/
-│   ├── models/         # Estruturas de dados
-│   └── services/       # Lógica de negócio
+│   ├── models/         # data structure
+│   └── services/       # Logics
 ├── pkg/
-│   └── ollama/         # Cliente LLM
+│   └── ollama/         # ollama clienmt
 ├── config/
-│   └── domains.json    # Configurações de domínio
-└── data/patterns/      # Dicionários de erros
+│   └── domains.json    # domain configs
+└── data/patterns/      # error dictionaries
 ```
 
 ---
 
-## 🚀 Como usar?
+## 🚀 How to Use?
 
-### Pré-requisitos
+### Prerequisites
 
-Certifique-se de ter as seguintes dependências instaladas:
+Make sure you have the following dependencies installed:
 - **Go** (1.21+)
-- **Docker** (para rodar a aplicação em contêiner, opcional)
+- **Docker** (for running the application in container, optional)
 
-### Instalação
+### Installation
 
 ```bash
 git clone https://github.com/yourusername/hefestus.git
@@ -108,9 +108,9 @@ go run cmd/server/main.go
 
 ---
 
-## 🔍 Exemplos de Uso
+## 🔍 Usage
 
-### **Exemplo de erro no kubernetes**
+### **Usage on kubernetes**
 ```bash
 curl -X POST http://localhost:8080/api/errors/kubernetes \
   -H "Content-Type: application/json" \
@@ -120,7 +120,7 @@ curl -X POST http://localhost:8080/api/errors/kubernetes \
   }'
 ```
 
-#### **Resposta**
+#### **response**
 ```json
 {
   "error": {
@@ -132,7 +132,7 @@ curl -X POST http://localhost:8080/api/errors/kubernetes \
 ```
 
 ### **Swagger UI**
-Acesse a documentação interativa no navegador:
+Access the documentation at:
 ```
 http://localhost:8080/swagger/index.html
 ```
@@ -141,12 +141,12 @@ http://localhost:8080/swagger/index.html
 
 ## 🐳 Docker
 
-### Build da imagem docker
+### Build docker image
 ```bash
 docker build -t hefestus:latest .
 ```
 
-### Executar o container
+### run container
 ```bash
 docker run -d \
     -p 8080:8080 \
@@ -157,11 +157,11 @@ docker run -d \
 
 ---
 
-## 🔧 Outras configs...
+## 🔧 Other Configurations...
 
-### Estrutura de chaveamento por domínio
+### Domain Keying Structure
 
-Exemplo de configuração de domínio (`domains.json`):
+Example of domain configuration (`domains.json`):
 ```json
 {
   "domains": [
@@ -178,7 +178,7 @@ Exemplo de configuração de domínio (`domains.json`):
 }
 ```
 
-### Exemplo de `error_pattern`
+### `error_pattern` example
 ```json
 {
   "patterns": {
@@ -186,8 +186,8 @@ Exemplo de configuração de domínio (`domains.json`):
       "pattern": "\\b(insufficient|not enough)\\s+(cpu|memory|resources)\\b",
       "category": "RESOURCE_LIMITS",
       "solutions": [
-        "Verifique o uso de recursos no cluster.",
-        "Considere aumentar os recursos alocados."
+        "Check cluster resource usage.",
+        "Consider increasing allocated resources."
       ]
     }
   }
@@ -196,33 +196,24 @@ Exemplo de configuração de domínio (`domains.json`):
 
 ---
 
-## Exemplos de swagger e curl:
+## 💡 Contributing
 
-![image1](https://github.com/manthysbr/hefestus/blob/main/img/image1.png)
-![image2](https://github.com/manthysbr/hefestus/blob/main/img/image2.png)
-![image3](https://github.com/manthysbr/hefestus/blob/main/img/image3.png)
-
----
-
-## 💡 Contribuindo
-
-Apesar de um projeto de estudo, contribuições são bem-vindas! Para contribuir:
-1. Faça um fork do repositório.
-2. Crie um branch para sua feature ou correção: `git checkout -b minha-feature`.
-3. Faça um commit das suas alterações: `git commit -m 'Adiciona minha nova feature'`.
-4. Faça o push para o branch: `git push origin minha-feature`.
-5. Abra um pull request.
+Although this is a study project, contributions are welcome! To contribute:
+1. Fork the repository.
+2. Create a branch for your feature or fix: git checkout -b my-feature.
+3. Commit your changes: git commit -m 'Add my new feature'.
+4. Push to the branch: git push origin my-feature.
+5. Open a pull request.
 
 ---
 
-## 📝 Licença
-
-Este projeto está licenciado sob a [MIT License](LICENSE).
+📝 License
+This project is licensed under the [MIT License](LICENSE).
 
 ---
 
 ## 📫 Contato
 
-Se você tiver dúvidas, entre em contato via [GitHub Issues](https://github.com/yourusername/hefestus/issues) e ficarei contente em responder você ^^;
+If you have any questions, reach out via GitHub Issues and I'll be happy to help! ^^;
 
 ---
