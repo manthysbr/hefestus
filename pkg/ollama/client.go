@@ -88,13 +88,13 @@ IMPORTANTE: Retorne APENAS um objeto JSON válido no seguinte formato:
 
 {
     "causa": "[máximo 4 palavras]",
-    "solucao": ["comando 1", "comando 2"]
+    "solucao": ["solucao 1", "solucao 2"]
 }
 
 REGRAS ESTRITAS:
 1. Retorne APENAS o JSON, sem markdown ou formatação
 2. causa deve ter NO MÁXIMO 4 palavras
-3. solucao deve ter array de comandos simples
+3. solucao deve ter array com as soluções mais simples
 4. Não use && ou comandos compostos`
 
 	// Combine template with instructions
