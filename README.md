@@ -15,7 +15,7 @@
 
 ---
 
-## 🎯 Objetivo
+## 🎯 Objetivo  
 
 O Hefestus foi desenvolvido como um projeto de estudo para explorar:
 - Como utilizar **Golang** para criar uma API de troubleshooting de erros de desenvolvimento.
@@ -24,7 +24,8 @@ O Hefestus foi desenvolvido como um projeto de estudo para explorar:
 Você pode configurar o Hefestus para receber erros de endpoints ou pipelines e obter soluções diretamente no console ou em outros sistemas integrados.
 
 
-## 📔 Contexto
+## 📔 Contexto  
+
 Eu gosto muito do  tema `observabilidade` e queria construir algo que pudesse maximizar o efeito de ferramentas open-source como o `Zabbix` e o `Rundeck`. Então construi o hefestus pra ser parte de uma solução que monitora, detecta, resolve e comunica times usando apenas ferramentas open-source, incluindo agentes de IA no fluxo, para a resolução dos problemas. O hefestus entra nesse meio, interpretando o erro e encaminhando a resposta para o próximo agente.
 A idéia é que ele seja um `man-in-the-middle` entre o conteúdo do log e a automação de `self-healing`.
 ---
