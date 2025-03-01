@@ -30,8 +30,6 @@ func init() {
 	}
 }
 
-// Testing commit files
-// @Summary Get error resolution
 // @Description Get possible solutions for an error by domain
 // @Tags errors
 // @Accept json
