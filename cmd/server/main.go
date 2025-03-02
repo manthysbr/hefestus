@@ -30,16 +30,18 @@ func init() {
 	}
 }
 
-// @Description Get possible solutions for an error by domain
-// @Tags errors
-// @Accept json
-// @Produce json
-// @Param domain path string true "Domain (kubernetes, github, argocd)" Enums(kubernetes, github, argocd)
-// @Param request body models.ErrorRequest true "Error details and context"
-// @Success 200 {object} models.ErrorResponse
-// @Failure 400 {object} map[string]string
-// @Failure 500 {object} map[string]string
-// @Router /errors/{domain} [post]
+// @Summary      Analisar e resolver erros por domínio
+// @Description  Recebe detalhes de um erro e seu contexto, retornando possíveis soluções baseadas em LLM
+// @Tags         errors
+// @Accept       json
+// @Produce      json
+// @Param        domain   path      string                 true  "Domínio técnico (kubernetes, github, argocd)"   Enums(kubernetes, github, argocd)
+// @Param        request  body      models.ErrorRequest    true  "Detalhes do erro e contexto"
+// @Success      200      {object}  models.ErrorResponse   "Solução para o erro"
+// @Failure      400      {object}  models.APIError        "Erro de validação ou requisição inválida"
+// @Failure      404      {object}  models.APIError        "Domínio não encontrado"
+// @Failure      500      {object}  models.APIError        "Erro interno do servidor"
+// @Router       /errors/{domain} [post]
 func main() {
 	r := gin.Default()
 

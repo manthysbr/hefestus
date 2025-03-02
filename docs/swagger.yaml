@@ -1,29 +1,59 @@
 basePath: /api
 definitions:
+  models.APIError:
+    description: Estrutura de erro padrão retornada pela API
+    properties:
+      code:
+        example: 400
+        type: integer
+      details:
+        example: O campo error_details é obrigatório
+        type: string
+      message:
+        example: Parâmetros inválidos
+        type: string
+    required:
+    - code
+    - message
+    type: object
   models.ErrorRequest:
+    description: Requisição contendo os detalhes do erro a ser analisado
     properties:
       context:
-        example: Trying to run go build in new project
+        example: Deployment em cluster Kubernetes 1.26 com imagem Docker personalizada
         type: string
       error_details:
-        example: 'go: cannot find module providing package'
+        example: 'CrashLoopBackOff: container failed to start'
         type: string
+    required:
+    - error_details
     type: object
   models.ErrorResponse:
+    description: Resposta contendo análise e solução para o erro reportado
     properties:
       error:
         $ref: '#/definitions/models.ErrorSolution'
       message:
+        example: Análise concluída com sucesso
         type: string
+    required:
+    - error
     type: object
   models.ErrorSolution:
+    description: Estrutura contendo a causa identificada e soluções propostas para
+      o erro
     properties:
       causa:
-        example: Módulo Go não inicializado
+        example: Imagem Docker inválida
         type: string
       solucao:
-        example: Execute go mod init nome-do-projeto
+        example: |-
+          kubectl describe pod meu-pod
+          kubectl logs meu-pod --previous
         type: string
+    required:
+    - causa
+    - solucao
     type: object
 host: localhost:8080
 info:
@@ -36,9 +66,10 @@ paths:
     post:
       consumes:
       - application/json
-      description: Get possible solutions for an error by domain
+      description: Recebe detalhes de um erro e seu contexto, retornando possíveis
+        soluções baseadas em LLM
       parameters:
-      - description: Domain (kubernetes, github, argocd)
+      - description: Domínio técnico (kubernetes, github, argocd)
         enum:
         - kubernetes
         - github
@@ -47,7 +78,7 @@ paths:
         name: domain
         required: true
         type: string
-      - description: Error details and context
+      - description: Detalhes do erro e contexto
         in: body
         name: request
         required: true
@@ -57,22 +88,22 @@ paths:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Solução para o erro
           schema:
             $ref: '#/definitions/models.ErrorResponse'
         "400":
-          description: Bad Request
+          description: Erro de validação ou requisição inválida
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.APIError'
+        "404":
+          description: Domínio não encontrado
+          schema:
+            $ref: '#/definitions/models.APIError'
         "500":
-          description: Internal Server Error
+          description: Erro interno do servidor
           schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: Get error resolution
+            $ref: '#/definitions/models.APIError'
+      summary: Analisar e resolver erros por domínio
       tags:
       - errors
 schemes:

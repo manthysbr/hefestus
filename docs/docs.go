@@ -17,7 +17,7 @@ const docTemplate = `{
     "paths": {
         "/errors/{domain}": {
             "post": {
-                "description": "Get possible solutions for an error by domain",
+                "description": "Recebe detalhes de um erro e seu contexto, retornando possíveis soluções baseadas em LLM",
                 "consumes": [
                     "application/json"
                 ],
@@ -27,7 +27,7 @@ const docTemplate = `{
                 "tags": [
                     "errors"
                 ],
-                "summary": "Get error resolution",
+                "summary": "Analisar e resolver erros por domínio",
                 "parameters": [
                     {
                         "enum": [
@@ -36,13 +36,13 @@ const docTemplate = `{
                             "argocd"
                         ],
                         "type": "string",
-                        "description": "Domain (kubernetes, github, argocd)",
+                        "description": "Domínio técnico (kubernetes, github, argocd)",
                         "name": "domain",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "description": "Error details and context",
+                        "description": "Detalhes do erro e contexto",
                         "name": "request",
                         "in": "body",
                         "required": true,
@@ -53,27 +53,27 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Solução para o erro",
                         "schema": {
                             "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Erro de validação ou requisição inválida",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.APIError"
+                        }
+                    },
+                    "404": {
+                        "description": "Domínio não encontrado",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIError"
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "Erro interno do servidor",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.APIError"
                         }
                     }
                 }
@@ -81,40 +81,76 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "models.ErrorRequest": {
+        "models.APIError": {
+            "description": "Estrutura de erro padrão retornada pela API",
             "type": "object",
+            "required": [
+                "code",
+                "message"
+            ],
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 400
+                },
+                "details": {
+                    "type": "string",
+                    "example": "O campo error_details é obrigatório"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Parâmetros inválidos"
+                }
+            }
+        },
+        "models.ErrorRequest": {
+            "description": "Requisição contendo os detalhes do erro a ser analisado",
+            "type": "object",
+            "required": [
+                "error_details"
+            ],
             "properties": {
                 "context": {
                     "type": "string",
-                    "example": "Trying to run go build in new project"
+                    "example": "Deployment em cluster Kubernetes 1.26 com imagem Docker personalizada"
                 },
                 "error_details": {
                     "type": "string",
-                    "example": "go: cannot find module providing package"
+                    "example": "CrashLoopBackOff: container failed to start"
                 }
             }
         },
         "models.ErrorResponse": {
+            "description": "Resposta contendo análise e solução para o erro reportado",
             "type": "object",
+            "required": [
+                "error"
+            ],
             "properties": {
                 "error": {
                     "$ref": "#/definitions/models.ErrorSolution"
                 },
                 "message": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Análise concluída com sucesso"
                 }
             }
         },
         "models.ErrorSolution": {
+            "description": "Estrutura contendo a causa identificada e soluções propostas para o erro",
             "type": "object",
+            "required": [
+                "causa",
+                "solucao"
+            ],
             "properties": {
                 "causa": {
                     "type": "string",
-                    "example": "Módulo Go não inicializado"
+                    "example": "Imagem Docker inválida"
                 },
                 "solucao": {
                     "type": "string",
-                    "example": "Execute go mod init nome-do-projeto"
+                    "example": "kubectl describe pod meu-pod\nkubectl logs meu-pod --previous"
                 }
             }
         }
