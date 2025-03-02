@@ -1,13 +1,13 @@
 package models
 
 type ErrorRequest struct {
-	ErrorDetails string `json:"error_details" example:"go: cannot find module providing package"`
-	Context      string `json:"context" example:"Trying to run go build in new project"`
+	ErrorDetails string `json:"error_details" validate:"required"`
+	Context      string `json:"context"`
 }
 
 type ErrorResponse struct {
-	Error   *ErrorSolution `json:"error"`
-	Message string         `json:"message"`
+	Resolutions []string `json:"resolutions"`
+	Info        string   `json:"info"`
 }
 
 type ErrorSolution struct {
