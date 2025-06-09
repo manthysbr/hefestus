@@ -265,21 +265,21 @@ func TestDomainConfig_JSONSerialization(t *testing.T) {
 func TestErrorRequest_RequiredFields(t *testing.T) {
 	// This test validates the struct tags are in place for validation
 	request := ErrorRequest{}
-	
+
 	// Get the struct type information
 	requestType := reflect.TypeOf(request)
-	
+
 	// Check that ErrorDetails field has required validation tag
 	errorDetailsField, exists := requestType.FieldByName("ErrorDetails")
 	if !exists {
 		t.Error("ErrorDetails field not found")
 	}
-	
+
 	validateTag := errorDetailsField.Tag.Get("validate")
 	if validateTag != "required" {
 		t.Errorf("Expected validate tag 'required', got '%s'", validateTag)
 	}
-	
+
 	bindingTag := errorDetailsField.Tag.Get("binding")
 	if bindingTag != "required" {
 		t.Errorf("Expected binding tag 'required', got '%s'", bindingTag)
@@ -289,7 +289,7 @@ func TestErrorRequest_RequiredFields(t *testing.T) {
 func TestAPIError_RequiredFields(t *testing.T) {
 	// Check that both Code and Message have required binding tags
 	apiErrorType := reflect.TypeOf(APIError{})
-	
+
 	codeField, exists := apiErrorType.FieldByName("Code")
 	if !exists {
 		t.Error("Code field not found")
@@ -297,7 +297,7 @@ func TestAPIError_RequiredFields(t *testing.T) {
 	if codeField.Tag.Get("binding") != "required" {
 		t.Errorf("Expected Code field to have binding:required tag")
 	}
-	
+
 	messageField, exists := apiErrorType.FieldByName("Message")
 	if !exists {
 		t.Error("Message field not found")
@@ -312,9 +312,9 @@ func TestNewAPIError(t *testing.T) {
 	code := 400
 	message := "Bad Request"
 	details := "Invalid input"
-	
+
 	apiError := NewAPIError(code, message, details)
-	
+
 	if apiError.Code != code {
 		t.Errorf("Expected Code %d, got %d", code, apiError.Code)
 	}
@@ -329,9 +329,9 @@ func TestNewAPIError(t *testing.T) {
 func TestNewErrorSolution(t *testing.T) {
 	cause := "Invalid configuration"
 	solution := "Check your config file"
-	
+
 	errorSolution := NewErrorSolution(cause, solution)
-	
+
 	if errorSolution.Cause != cause {
 		t.Errorf("Expected Cause %s, got %s", cause, errorSolution.Cause)
 	}
@@ -346,9 +346,9 @@ func TestNewErrorResponse(t *testing.T) {
 		Solution: "Test solution",
 	}
 	message := "Analysis complete"
-	
+
 	response := NewErrorResponse(solution, message)
-	
+
 	if !reflect.DeepEqual(response.Error, solution) {
 		t.Errorf("Expected Error %+v, got %+v", solution, response.Error)
 	}
@@ -382,11 +382,11 @@ func TestNewDomainConfig(t *testing.T) {
 			parameters:     nil,
 		},
 	}
-	
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			config := NewDomainConfig(tt.configName, tt.promptTemplate, tt.dictionaryPath, tt.parameters)
-			
+
 			if config.Name != tt.configName {
 				t.Errorf("Expected Name %s, got %s", tt.configName, config.Name)
 			}
@@ -396,7 +396,7 @@ func TestNewDomainConfig(t *testing.T) {
 			if config.DictionaryPath != tt.dictionaryPath {
 				t.Errorf("Expected DictionaryPath %s, got %s", tt.dictionaryPath, config.DictionaryPath)
 			}
-			
+
 			// Check parameters
 			if tt.parameters == nil {
 				if config.Parameters == nil {

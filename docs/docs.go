@@ -78,11 +78,33 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/health": {
+            "get": {
+                "description": "Verifica se o serviço está em funcionamento",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "system"
+                ],
+                "summary": "Verificar saúde do serviço",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
         "models.APIError": {
-            "description": "Estrutura de erro padrão retornada pela API",
             "type": "object",
             "required": [
                 "code",
@@ -95,16 +117,15 @@ const docTemplate = `{
                 },
                 "details": {
                     "type": "string",
-                    "example": "O campo error_details é obrigatório"
+                    "example": "The error_details field is required"
                 },
                 "message": {
                     "type": "string",
-                    "example": "Parâmetros inválidos"
+                    "example": "Invalid parameters"
                 }
             }
         },
         "models.ErrorRequest": {
-            "description": "Requisição contendo os detalhes do erro a ser analisado",
             "type": "object",
             "required": [
                 "error_details"
@@ -112,7 +133,7 @@ const docTemplate = `{
             "properties": {
                 "context": {
                     "type": "string",
-                    "example": "Deployment em cluster Kubernetes 1.26 com imagem Docker personalizada"
+                    "example": "Deployment in Kubernetes 1.26 cluster with custom Docker image"
                 },
                 "error_details": {
                     "type": "string",
@@ -121,7 +142,6 @@ const docTemplate = `{
             }
         },
         "models.ErrorResponse": {
-            "description": "Resposta contendo análise e solução para o erro reportado",
             "type": "object",
             "required": [
                 "error"
@@ -132,12 +152,11 @@ const docTemplate = `{
                 },
                 "message": {
                     "type": "string",
-                    "example": "Análise concluída com sucesso"
+                    "example": "Analysis completed successfully"
                 }
             }
         },
         "models.ErrorSolution": {
-            "description": "Estrutura contendo a causa identificada e soluções propostas para o erro",
             "type": "object",
             "required": [
                 "causa",
@@ -146,21 +165,15 @@ const docTemplate = `{
             "properties": {
                 "causa": {
                     "type": "string",
-                    "example": "Imagem Docker inválida"
+                    "example": "Invalid Docker image"
                 },
                 "solucao": {
                     "type": "string",
-                    "example": "kubectl describe pod meu-pod\nkubectl logs meu-pod --previous"
+                    "example": "kubectl describe pod my-pod\nkubectl logs my-pod --previous"
                 }
             }
         }
-    },
-    "tags": [
-        {
-            "description": "Error resolution endpoints",
-            "name": "errors"
-        }
-    ]
+    }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
@@ -170,7 +183,7 @@ var SwaggerInfo = &swag.Spec{
 	BasePath:         "/api",
 	Schemes:          []string{"http"},
 	Title:            "Hefestus API",
-	Description:      "Error resolution API using local LLM",
+	Description:      "API para resolução de erros técnicos utilizando LLMs locais",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

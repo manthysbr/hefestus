@@ -196,6 +196,39 @@ Example of domain configuration (`domains.json`):
 
 ---
 
+## 🧪 Testing
+
+This project includes comprehensive test coverage for all components:
+
+### Unit Tests
+- **Models**: 100% test coverage for all data structures with JSON serialization/deserialization validation
+- **Constructor Functions**: Tests for all `New*` constructor functions
+
+### Integration Tests  
+- **API Endpoints**: Validates all REST endpoints work correctly
+- **Swagger UI**: Ensures Swagger documentation is accessible and properly structured
+- **Model Compatibility**: Verifies backward compatibility of refactored models
+
+### E2E Tests
+- **Playwright Tests**: Browser automation tests for complete Swagger UI interaction
+- **Schema Validation**: Validates API schemas through the Swagger interface
+
+To run tests:
+```bash
+# Unit tests
+go test ./internal/models -cover
+
+# Integration tests (requires running server)
+go test ./test -v
+
+# E2E tests (requires Playwright)
+cd test && npm run test:e2e
+```
+
+See [test/README.md](test/README.md) for detailed testing instructions.
+
+---
+
 ## 💡 Contributing
 
 Although this is a study project, contributions are welcome! To contribute:
