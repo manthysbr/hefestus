@@ -43,7 +43,7 @@ func (s *LLMService) GetResolution(ctx context.Context, domain string, errorDeta
 	}
 
 	return &models.ErrorSolution{
-		Causa:   causa,
-		Solucao: solucao,
+		Cause:    causa,
+		Solution: solucao,
 	}, nil
 }

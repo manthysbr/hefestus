@@ -1,26 +1,24 @@
 basePath: /api
 definitions:
   models.APIError:
-    description: Estrutura de erro padrão retornada pela API
     properties:
       code:
         example: 400
         type: integer
       details:
-        example: O campo error_details é obrigatório
+        example: The error_details field is required
         type: string
       message:
-        example: Parâmetros inválidos
+        example: Invalid parameters
         type: string
     required:
     - code
     - message
     type: object
   models.ErrorRequest:
-    description: Requisição contendo os detalhes do erro a ser analisado
     properties:
       context:
-        example: Deployment em cluster Kubernetes 1.26 com imagem Docker personalizada
+        example: Deployment in Kubernetes 1.26 cluster with custom Docker image
         type: string
       error_details:
         example: 'CrashLoopBackOff: container failed to start'
@@ -29,27 +27,24 @@ definitions:
     - error_details
     type: object
   models.ErrorResponse:
-    description: Resposta contendo análise e solução para o erro reportado
     properties:
       error:
         $ref: '#/definitions/models.ErrorSolution'
       message:
-        example: Análise concluída com sucesso
+        example: Analysis completed successfully
         type: string
     required:
     - error
     type: object
   models.ErrorSolution:
-    description: Estrutura contendo a causa identificada e soluções propostas para
-      o erro
     properties:
       causa:
-        example: Imagem Docker inválida
+        example: Invalid Docker image
         type: string
       solucao:
         example: |-
-          kubectl describe pod meu-pod
-          kubectl logs meu-pod --previous
+          kubectl describe pod my-pod
+          kubectl logs my-pod --previous
         type: string
     required:
     - causa
@@ -58,7 +53,7 @@ definitions:
 host: localhost:8080
 info:
   contact: {}
-  description: Error resolution API using local LLM
+  description: API para resolução de erros técnicos utilizando LLMs locais
   title: Hefestus API
   version: "1.0"
 paths:
@@ -106,9 +101,21 @@ paths:
       summary: Analisar e resolver erros por domínio
       tags:
       - errors
+  /health:
+    get:
+      description: Verifica se o serviço está em funcionamento
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Verificar saúde do serviço
+      tags:
+      - system
 schemes:
 - http
 swagger: "2.0"
-tags:
-- description: Error resolution endpoints
-  name: errors

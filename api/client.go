@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/your-username/hefestus/pkg/models"
+	"hefestus-api/internal/models"
 )
 
 // Client encapsula um cliente HTTP para comunicação com a API Hefestus.

@@ -1,0 +1,15 @@
+{
+  "name": "hefestus-e2e-tests",
+  "version": "1.0.0",
+  "description": "E2E tests for Hefestus API using Playwright",
+  "scripts": {
+    "test:e2e": "playwright test",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:debug": "playwright test --debug",
+    "test:integration": "cd .. && go test ./test/...",
+    "install:browsers": "playwright install"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0"
+  }
+}
